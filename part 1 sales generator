@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void monthlyreport(float *dolla, char *months[]) {
+  printf("\nMonthly sales report for 2022:\nMonth\tSales\n");
+  for (int a = 0; a < 12; a++) {
+    printf("%s: $%.2f\n", months[a], dolla[a]);
+  }
+}
+
+void salessum(float *dolla, char *months[]) {
+  float min_sales = dolla[0];
+  float max_sales = dolla[0];
+  int min_index = 0;
+  int max_index = 0;
+  float total_sales = 0;
+
+  for (int i = 0; i < 12; i++) {
+    if (dolla[i] < min_sales) {
+      min_sales = dolla[i];
+      min_index = i;
+    }
+    if (dolla[i] > max_sales) {
+      max_sales = dolla[i];
+      max_index = i;
+    }
+    total_sales += dolla[i];
+  }
+
+  printf("\nSales summary:\n");
+  printf("Minimum sales: %.2f (%s)\n", min_sales, months[min_index]);
+  printf("Maximum sales: %.2f (%s)\n", max_sales, months[max_index]);
+  printf("Average sales: %.2f\n", total_sales / 12);
+}
+
+void sixmonth(float *dolla, char *months[]) {
+  printf("\nSix month floating averages:\n");
+  for (int x = 0; x < 7; x++) {
+    float sum = 0;
+    for (int i = x; i < x + 6; i++) {
+      sum += dolla[i];
+    }
+    printf("%s - %s: %.2f\n", months[x], months[x + 5], sum / 6);
+  }
+}
+
+void sorted(float *dolla, char *months[]) {
+  printf("\nSales sorted by sales:\n");
+  float sorted_dolla[12];
+  int sorted_indices[12];
+
+  for (int i = 0; i < 12; i++) {
+    sorted_dolla[i] = dolla[i];
+    sorted_indices[i] = i;
+  }
+
+  for (int i = 0; i < 12; i++) {
+    for (int j = i + 1; j < 12; j++) {
+      if (sorted_dolla[i] < sorted_dolla[j]) {
+        float temp = sorted_dolla[i];
+        sorted_dolla[i] = sorted_dolla[j];
+        sorted_dolla[j] = temp;
+
+        int temp_index = sorted_indices[i];
+        sorted_indices[i] = sorted_indices[j];
+        sorted_indices[j] = temp_index;
+      }
+    }
+  }
+
+  for (int i = 0; i < 12; i++) {
+    printf("%s, %.2f\n", months[sorted_indices[i]], sorted_dolla[i]);
+  }
+}
+
+int main() {
+  FILE *file;
+  char filename[100];
+  printf("input file name pls (include .txt): ");
+  fgets(filename, sizeof(filename), stdin);
+  filename[strcspn(filename, "\n")] = 0;
+
+  file = fopen(filename, "r");
+  if (file == NULL) {
+    printf("I didn't find the file :(\n");
+    return 1;
+  }
+
+  float dolla[12];
+  char *months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+  for (int i = 0; i < 12; i++) {
+    fscanf(file, "%f", &dolla[i]);
+  }
+
+  monthlyreport(dolla, months);
+  salessum(dolla, months);
+  sixmonth(dolla, months);
+  sorted(dolla, months);
+
+  fclose(file);
+  return 0;
+}

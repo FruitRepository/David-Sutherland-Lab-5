@@ -1,0 +1,50 @@
+#include <stdio.h>
+void makecombinations(int score){
+  
+int td, fg, safety;
+
+printf("all combos: \n");
+for (td = 0; td <= score / 6; td++){
+  
+  for (fg = 0; fg <= score / 3; fg++){
+    
+    for (safety = 0; safety <= score / 2; safety++){
+      
+      int totalScore = (td * 6) + (fg * 3) + (safety * 2);
+      
+      if (totalScore == score) {
+        
+        printf("%d touchdown + %d field goal + %d safety\n", td, fg, safety);
+        
+      }
+    }
+  }
+}
+}
+
+
+
+
+int main(){
+
+int score;
+
+while (1){
+  
+  printf("please enter football score: ");
+  scanf("%d", &score);
+
+  // Terminate if score is less than or equal to 1
+  if (score <= 1){
+    printf("done\n");
+    
+    break;
+  }
+
+  makecombinations(score);
+  
+}
+
+return 0;
+
+}
